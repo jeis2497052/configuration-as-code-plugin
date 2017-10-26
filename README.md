@@ -10,16 +10,18 @@ Pushes to master are allowed. We kindly ask you though to _keep ALL of your work
 Development on *master* branch
 
 To make is easier you can use [git phlow](https://github.com/Praqma/git-phlow/tree/master/docs) - please update to the latest version
-    ```
-    # Tap our repository
-    brew tap praqma/praqma-tap
+
+```
+# Tap our repository
+brew tap praqma/praqma-tap
     
-    # Install git-phlow
-    brew install git-phlow
+# Install git-phlow
+brew install git-phlow
     
-    # Upgrade to a new version
-    brew upgrade git-phlow
-    ```
+# Upgrade to a new version
+brew upgrade git-phlow
+```
+
 Since there is no real integration attached to that repository yet use `git phlow deliver --local` to merge and push it to master
  
 
