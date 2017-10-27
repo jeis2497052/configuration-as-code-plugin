@@ -5,3 +5,5 @@ work
 target
 generated/
 **/*.generated
+
+.vscode/

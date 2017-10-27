@@ -1,6 +1,8 @@
 # Jenkins Configuration as Code Plugin
 
 # Getting started
+[getting started](/GETTING_STARTED.md)
+
 
 ### How to run in your development environment
 
