@@ -11,9 +11,11 @@ It is a maven project, to run in command line type
    
 After the java process will run you will have this project Jenkins instance available on http://localhost:8080/jenkins
 
-### How to debug
+To debug. If you are using IntelijIDEA, create a debug configuration for **hpi:run** command and debug as a usually java project.
 
-If you are using IntelijIDEA, create a debug configuration for **hpi:run** command and debug as a usually java project.
+### Structure
+
+To be updated ...
 
 # WoW/Contributing
 
@@ -36,7 +38,3 @@ brew upgrade git-phlow
 ```
 
 Since there is no real integration attached to that repository yet use `git phlow deliver --local` to merge and push it to master
- 
-
-
->>>>>>> 96e56b6ea2d2da61a0951a66ccc478ce6af04b22
