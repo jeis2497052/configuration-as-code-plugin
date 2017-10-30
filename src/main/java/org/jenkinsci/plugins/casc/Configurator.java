@@ -6,6 +6,7 @@ import hudson.ExtensionPoint;
 import hudson.model.Describable;
 import jenkins.model.Jenkins;
 import org.apache.commons.io.IOUtils;
+import org.codehaus.groovy.runtime.powerassert.SourceText;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.lang.Klass;
 
@@ -15,11 +16,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author <a href="mailto:nicolas.deloof@gmail.com">Nicolas De Loof</a>
@@ -30,7 +27,8 @@ public abstract class Configurator<T> implements ExtensionPoint {
         final ExtensionList<Configurator> l = Jenkins.getInstance().getExtensionList(Configurator.class);
         for (Configurator c : l) {
             if (c instanceof RootElementConfigurator
-                && ((RootElementConfigurator)c).getName().equals(name)) {
+                    && ((RootElementConfigurator) c).getName().equals(name)) {
+                System.out.println("[CONFIGURATOR] "+c.getName());
                 return c;
             }
         }
@@ -43,6 +41,7 @@ public abstract class Configurator<T> implements ExtensionPoint {
 
         final ExtensionList<Configurator> l = Jenkins.getInstance().getExtensionList(Configurator.class);
         for (Configurator c : l) {
+
             if (clazz == c.getTarget()) {
                 // this type has a dedicated Configurator implementation
                 return c;
@@ -56,7 +55,7 @@ public abstract class Configurator<T> implements ExtensionPoint {
                 actualType = ((WildcardType) actualType).getUpperBounds()[0];
             }
             if (!(actualType instanceof Class)) {
-                throw new IllegalStateException("Can't handle "+type);
+                throw new IllegalStateException("Can't handle " + type);
             }
             return lookup(actualType);
         }
@@ -89,7 +88,6 @@ public abstract class Configurator<T> implements ExtensionPoint {
     // ---
 
     /**
-     *
      * @return the list of Configurator to be considered so one can fully configure this component.
      * Typically, an extension point with multiple implementations will return Configurators for available implementations.
      */
@@ -121,7 +119,9 @@ public abstract class Configurator<T> implements ExtensionPoint {
     /**
      * Human friendly display name for this component.
      */
-    public String getDisplayName() { return ""; }
+    public String getDisplayName() {
+        return "";
+    }
 
     private Klass getKlass() {
         return Klass.java(getTarget());
@@ -134,7 +134,7 @@ public abstract class Configurator<T> implements ExtensionPoint {
      */
     public List<Attribute> getAttributes() {
         final ArrayList<Attribute> attributes = new ArrayList<>(describe());
-        Collections.sort(attributes, (a,b) -> a.name.compareTo(b.name));
+        Collections.sort(attributes, (a, b) -> a.name.compareTo(b.name));
         return attributes;
     }
 
@@ -150,6 +150,7 @@ public abstract class Configurator<T> implements ExtensionPoint {
     public String getHtmlHelp(String attribute) throws IOException {
         final URL resource = getKlass().getResource("help-" + attribute + ".html");
         if (resource != null) {
+            System.out.println("[HELP HTML] " + IOUtils.toString(resource));
             return IOUtils.toString(resource);
         }
         return "";
