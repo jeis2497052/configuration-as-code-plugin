@@ -6,15 +6,9 @@ import hudson.init.Initializer;
 import jenkins.model.Jenkins;
 import org.yaml.snakeyaml.Yaml;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import javax.servlet.ServletException;
+import java.io.*;
+import java.util.*;
 
 /**
  * @author <a href="mailto:nicolas.deloof@gmail.com">Nicolas De Loof</a>
@@ -120,5 +114,20 @@ public class ConfigurationAsCode extends Plugin {
         }
 
 
+    }
+    @Initializer(after = InitMilestone.JOB_LOADED)
+    public void installPlugins() throws IOException, ServletException {
+        // TODO get version added to the install of the plugin so we can control the specific version
+
+        final File f = new File("./plugin.yml");
+        if(f.exists()){
+            Collection<String> plugins = new Yaml().loadAs(new FileInputStream(f), ArrayList.class);
+            for (String e: plugins) {
+                System.out.println("XXXXXXXXXXXXXXXXX  Plugin: " + e);
+            }
+            Jenkins.getInstance().pluginManager.install(plugins, false);
+        }else{
+            System.out.println("File not found ");
+        }
     }
 }
