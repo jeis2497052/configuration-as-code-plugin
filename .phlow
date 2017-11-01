@@ -1,6 +1,0 @@
-[default]
-remote                 = origin
-service                = github
-integration_branch     = cloudbees
-issue_url              = https://api.github.com
-delivery_branch_prefix = ready
