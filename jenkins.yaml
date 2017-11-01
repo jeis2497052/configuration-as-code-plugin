@@ -1,12 +1,5 @@
 jenkins:
-  #securityRealm:
-  #  github: # implicit.. take whatever name is after "securityRealm" and make it lowercase
-  #    clientID: "helloworld"
-  #    clientSecret: "www.google.com"
-  #    githubApiUri: "api.github.com"
-  #    githubWebUri: "api.github.com"
-  #    oauthScopes: "repo"
-
+  securityRealm: local
   #securityRealm:
   #  ldap:
   #    configurations:
@@ -19,9 +12,9 @@ jenkins:
   #    userIdStrategy: CaseSensitive
   #    groupIdStrategy: CaseSensitive
 
-  #authorizationStrategy:
-  #  loggedInUsersCanDoAnything:
-  #    allowAnonymousRead: false
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
 
   noUsageStatistics: true
   slaveAgentPort: 6666

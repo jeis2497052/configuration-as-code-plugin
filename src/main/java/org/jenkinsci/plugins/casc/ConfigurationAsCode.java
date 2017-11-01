@@ -4,11 +4,13 @@ import hudson.Plugin;
 import hudson.init.InitMilestone;
 import hudson.init.Initializer;
 import jenkins.model.Jenkins;
+import org.codehaus.groovy.runtime.powerassert.SourceText;
 import org.yaml.snakeyaml.Yaml;
 
 import javax.servlet.ServletException;
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author <a href="mailto:nicolas.deloof@gmail.com">Nicolas De Loof</a>
@@ -115,17 +117,14 @@ public class ConfigurationAsCode extends Plugin {
 
 
     }
-    @Initializer(after = InitMilestone.JOB_LOADED)
-    public void installPlugins() throws IOException, ServletException {
+    @Initializer(after = InitMilestone.EXTENSIONS_AUGMENTED)
+    public void installPlugins() throws IOException, ServletException, InterruptedException {
         // TODO get version added to the install of the plugin so we can control the specific version
-
-        final File f = new File("./plugin.yml");
+        Jenkins.getInstance().pluginManager.doCheckUpdatesServer();
+        final File f = new File("./plugins.yml");
         if(f.exists()){
             Collection<String> plugins = new Yaml().loadAs(new FileInputStream(f), ArrayList.class);
-            for (String e: plugins) {
-                System.out.println("XXXXXXXXXXXXXXXXX  Plugin: " + e);
-            }
-            Jenkins.getInstance().pluginManager.install(plugins, false);
+            Jenkins.getInstance().pluginManager.install(plugins, true);
         }else{
             System.out.println("File not found ");
         }

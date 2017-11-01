@@ -1,6 +1,6 @@
 # This is a work-in-progress template and will be updated as the development moves on.
 # if we are using this format. pluginManager uses this format when executing install(Collection<String>, bool)
 # we need to find a way to tell jenkins which specific version of the plugin we want
+# YOU MUST USE THE PLUGIN ID that can be found on https://wiki.jenkins.io/
 
-- workflow-aggregator
-- git
+- "workflow-aggregator"
