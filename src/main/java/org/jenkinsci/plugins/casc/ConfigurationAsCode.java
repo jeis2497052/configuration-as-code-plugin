@@ -4,13 +4,13 @@ import hudson.Plugin;
 import hudson.init.InitMilestone;
 import hudson.init.Initializer;
 import jenkins.model.Jenkins;
-import org.codehaus.groovy.runtime.powerassert.SourceText;
 import org.yaml.snakeyaml.Yaml;
-
 import javax.servlet.ServletException;
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author <a href="mailto:nicolas.deloof@gmail.com">Nicolas De Loof</a>
@@ -20,7 +20,7 @@ public class ConfigurationAsCode extends Plugin {
 
     @Initializer(after = InitMilestone.EXTENSIONS_AUGMENTED)
     public static void configure() throws Exception {
-        final File f = new File("./jenkins.yaml");
+        final File f = getConfigFile();
         if (f.exists()) {
             configure(f);
         }
@@ -126,10 +126,36 @@ public class ConfigurationAsCode extends Plugin {
         Jenkins.getInstance().pluginManager.install(plugins, true);
     }
 
-    public static <T> T getConfigYaml(File file, Class<T> type) throws FileNotFoundException{
+    private static <T> T getConfigYaml(File file, Class<T> type) throws FileNotFoundException{
+
         if(!file.exists()) {
             throw new FileNotFoundException(file.getPath() + " Was not found, Check path or spelling");
         }
             return new Yaml().loadAs(new FileInputStream(file), type);
+    }
+
+    private static File getConfigFile() throws MalformedURLException, IOException {
+        // TODO Fix this code as this is just for the MVP and is very verbose and probably a ugly solution
+        File file;
+        String envVar = System.getenv("JENKINS_CONF");
+        if(envVar.contains("http")){
+            String ymlText = "";
+            URL url = new URL(envVar);
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"))) {
+                for (String line; (line = reader.readLine()) != null; ) {
+                    ymlText += line + "\n";
+                }
+                File temp = File.createTempFile("something", ".yaml");
+                BufferedWriter out = new BufferedWriter(new FileWriter(temp));
+                out.write(ymlText);
+                out.close();
+                file = temp;
+
+            }
+        }else {
+            file = new File(envVar);
+        }
+
+        return file;
     }
 }
