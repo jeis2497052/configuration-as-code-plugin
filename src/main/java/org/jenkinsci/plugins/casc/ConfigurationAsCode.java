@@ -22,14 +22,13 @@ public class ConfigurationAsCode extends Plugin {
     public static void configure() throws Exception {
         final File f = new File("./jenkins.yaml");
         if (f.exists()) {
-            configure(new FileInputStream(f));
+            configure(f);
         }
     }
 
+    public static void configure(File f) throws Exception {
 
-    public static void configure(InputStream in) throws Exception {
-
-        Map<String, Object> config = new Yaml().loadAs(in, Map.class);
+        Map<String, Object> config = getConfigYaml(f, Map.class);
         for (Map.Entry<String, Object> e : config.entrySet()) {
             final Configurator configurator = Configurator.lookupRootElement(e.getKey());
             if (configurator == null) {
@@ -114,19 +113,23 @@ public class ConfigurationAsCode extends Plugin {
             if (configurator == null) continue;
             document(type.getName(), configurator.describe());
         }
-
-
     }
+
     @Initializer(after = InitMilestone.EXTENSIONS_AUGMENTED)
-    public void installPlugins() throws IOException, ServletException, InterruptedException {
+    public static void installPlugins() throws IOException, ServletException, InterruptedException {
         // TODO get version added to the install of the plugin so we can control the specific version
         Jenkins.getInstance().pluginManager.doCheckUpdatesServer();
+
         final File f = new File("./plugins.yml");
-        if(f.exists()){
-            Collection<String> plugins = new Yaml().loadAs(new FileInputStream(f), ArrayList.class);
-            Jenkins.getInstance().pluginManager.install(plugins, true);
-        }else{
-            System.out.println("File not found ");
+        Collection<String> plugins = getConfigYaml(f, ArrayList.class);
+
+        Jenkins.getInstance().pluginManager.install(plugins, true);
+    }
+
+    public static <T> T getConfigYaml(File file, Class<T> type) throws FileNotFoundException{
+        if(!file.exists()) {
+            throw new FileNotFoundException(file.getPath() + " Was not found, Check path or spelling");
         }
+            return new Yaml().loadAs(new FileInputStream(file), type);
     }
 }
