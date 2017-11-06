@@ -20,7 +20,7 @@ public class ConfigurationAsCode extends Plugin {
 
     @Initializer(after = InitMilestone.EXTENSIONS_AUGMENTED)
     public static void configure() throws Exception {
-        final File f = getConfigFile();
+        final File f = getConfigFile("JENKINS_CONF");
         if (f.exists()) {
             configure(f);
         }
@@ -119,36 +119,8 @@ public class ConfigurationAsCode extends Plugin {
     public static void installPlugins() throws IOException, ServletException, InterruptedException {
         // TODO get version added to the install of the plugin so we can control the specific version
         Jenkins.getInstance().pluginManager.doCheckUpdatesServer();
-
-        File file;
-        if(System.getenv("JENKINS_PLUGINS") != null) {
-            String envVar = System.getenv("JENKINS_PLUGINS");
-            if(envVar.contains("http")){
-                String ymlText = "";
-                URL url = new URL(envVar);
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"))) {
-                    for (String line; (line = reader.readLine()) != null; ) {
-                        ymlText += line + "\n";
-                    }
-                    File temp = File.createTempFile("something", ".yaml");
-                    BufferedWriter out = new BufferedWriter(new FileWriter(temp));
-                    out.write(ymlText);
-                    out.close();
-                    file = temp;
-
-                }
-            }else {
-                file = new File(envVar);
-            }
-
-
-            Collection<String> plugins = getConfigYaml(file, ArrayList.class);
-
-            Jenkins.getInstance().pluginManager.install(plugins, true);
-
-        } else {
-            System.out.println("[ERROR] JENKINS_PLUGINS variable is not set. Can't install plugins");
-        }
+        Collection<String> plugins = getConfigYaml(getConfigFile("JENKINS_PLUGINS"), ArrayList.class);
+        Jenkins.getInstance().pluginManager.install(plugins, true);
     }
 
     private static <T> T getConfigYaml(File file, Class<T> type) throws FileNotFoundException{
@@ -159,28 +131,35 @@ public class ConfigurationAsCode extends Plugin {
             return new Yaml().loadAs(new FileInputStream(file), type);
     }
 
-    private static File getConfigFile() throws MalformedURLException, IOException {
+    private static File getConfigFile(String envName) throws MalformedURLException, IOException {
         // TODO Fix this code as this is just for the MVP and is very verbose and probably a ugly solution
-        File file;
-        String envVar = System.getenv("JENKINS_CONF");
-        if(envVar.contains("http")){
-            String ymlText = "";
-            URL url = new URL(envVar);
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"))) {
-                for (String line; (line = reader.readLine()) != null; ) {
-                    ymlText += line + "\n";
+        BufferedWriter out = null;
+        String envVar = System.getenv(envName);
+        if(envVar != null) {
+            if (envVar.contains("http")) {
+                File file;
+                String ymlText = "";
+                URL url = new URL(envVar);
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));) {
+                    for (String line; (line = reader.readLine()) != null; ) {
+                        ymlText += line + "\n";
+                    }
+                    File temp = File.createTempFile("something", ".yaml");
+                    out = new BufferedWriter(new FileWriter(temp));
+                    out.write(ymlText);
+                    file = temp;
+                    return file;
+                } catch (IOException e) {
+                    System.out.println(e);
+                } finally {
+                    if (out != null) {
+                        out.flush();
+                        out.close();
+                    }
                 }
-                File temp = File.createTempFile("something", ".yaml");
-                BufferedWriter out = new BufferedWriter(new FileWriter(temp));
-                out.write(ymlText);
-                out.close();
-                file = temp;
-
             }
-        }else {
-            file = new File(envVar);
+            return new File(envVar);
         }
-
-        return file;
+        throw new FileNotFoundException("[ERROR] " + envName +  " variable is not set or the URL/URi is wrong. Can't complete setup");
     }
 }
