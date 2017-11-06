@@ -27,7 +27,7 @@ public class ExtensionConfigurator extends BaseConfigurator {
         return target;
     }
 
-
+    //How much can the extension configurator configure? limits in variables or
     @Override
     public Object configure(Object c) throws Exception {
         final ExtensionList list = Jenkins.getInstance().getExtensionList(target);
