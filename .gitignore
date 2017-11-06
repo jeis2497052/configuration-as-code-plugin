@@ -170,3 +170,4 @@ $RECYCLE.BIN/
 # project specific
 work/
 target/
+jenkins_home/
