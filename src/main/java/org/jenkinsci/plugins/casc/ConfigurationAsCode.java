@@ -120,10 +120,35 @@ public class ConfigurationAsCode extends Plugin {
         // TODO get version added to the install of the plugin so we can control the specific version
         Jenkins.getInstance().pluginManager.doCheckUpdatesServer();
 
-        final File f = new File("./plugins.yml");
-        Collection<String> plugins = getConfigYaml(f, ArrayList.class);
+        File file;
+        if(System.getenv("JENKINS_PLUGINS") != null) {
+            String envVar = System.getenv("JENKINS_PLUGINS");
+            if(envVar.contains("http")){
+                String ymlText = "";
+                URL url = new URL(envVar);
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"))) {
+                    for (String line; (line = reader.readLine()) != null; ) {
+                        ymlText += line + "\n";
+                    }
+                    File temp = File.createTempFile("something", ".yaml");
+                    BufferedWriter out = new BufferedWriter(new FileWriter(temp));
+                    out.write(ymlText);
+                    out.close();
+                    file = temp;
 
-        Jenkins.getInstance().pluginManager.install(plugins, true);
+                }
+            }else {
+                file = new File(envVar);
+            }
+
+
+            Collection<String> plugins = getConfigYaml(file, ArrayList.class);
+
+            Jenkins.getInstance().pluginManager.install(plugins, true);
+
+        } else {
+            System.out.println("[ERROR] JENKINS_PLUGINS variable is not set. Can't install plugins");
+        }
     }
 
     private static <T> T getConfigYaml(File file, Class<T> type) throws FileNotFoundException{
