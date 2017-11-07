@@ -4,3 +4,4 @@
 # YOU MUST USE THE PLUGIN ID that can be found on https://wiki.jenkins.io/
 
 - "workflow-aggregator"
+- "mailer"

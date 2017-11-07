@@ -6,7 +6,6 @@ import hudson.init.Initializer;
 import hudson.model.Descriptor;
 import jenkins.model.Jenkins;
 import org.yaml.snakeyaml.Yaml;
-
 import javax.servlet.ServletException;
 import java.io.*;
 import java.net.MalformedURLException;
@@ -136,9 +135,10 @@ public class ConfigurationAsCode extends Plugin {
     @Initializer(after = InitMilestone.EXTENSIONS_AUGMENTED)
     public static void installPlugins() throws IOException, ServletException, InterruptedException {
         // TODO get version added to the install of the plugin so we can control the specific version
-        Jenkins.getInstance().pluginManager.doCheckUpdatesServer();
+        Jenkins jenkins = Jenkins.getInstance();
+        jenkins.pluginManager.doCheckUpdatesServer();
         Collection<String> plugins = getConfigYaml(getConfigFile("JENKINS_PLUGINS"), ArrayList.class);
-        Jenkins.getInstance().pluginManager.install(plugins, true);
+        jenkins.pluginManager.install(plugins, true);
     }
 
     private static <T> T getConfigYaml(File file, Class<T> type) throws FileNotFoundException{

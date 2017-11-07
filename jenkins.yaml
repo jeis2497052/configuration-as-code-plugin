@@ -1,7 +1,7 @@
 jenkins:
-  # securityRealm: local
+  #securityRealm: local
   securityRealm:
-    ldap:
+     ldap:
       configurations:
         - server: ldap.acme.com
           rootDN: dc=acme,dc=fr
