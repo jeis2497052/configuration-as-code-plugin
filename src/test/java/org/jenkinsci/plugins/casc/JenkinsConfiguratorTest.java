@@ -19,6 +19,7 @@ public class JenkinsConfiguratorTest {
     @Rule
     public JenkinsRule j = new JenkinsRule();
 
+
     @Test
     public void jenkins_primitive_attributes() throws Exception {
         ConfigurationAsCode.configure(new File("Primitives.yml"));
@@ -37,7 +38,5 @@ public class JenkinsConfiguratorTest {
         assertTrue(jenkins.getAuthorizationStrategy() instanceof FullControlOnceLoggedInAuthorizationStrategy);
         assertFalse(((FullControlOnceLoggedInAuthorizationStrategy) jenkins.getAuthorizationStrategy()).isAllowAnonymousRead());
     }
-
-
 
 }

@@ -1,16 +1,16 @@
 jenkins:
-  securityRealm: local
-  #securityRealm:
-  #  ldap:
-  #    configurations:
-  #      - server: ldap.acme.com
-  #        rootDN: dc=acme,dc=fr
-  #        managerPasswordSecret: ${LDAP_PASSWORD}
-  #    cache:
-  #      size: 100
-  #      ttl: 10
-  #    userIdStrategy: CaseSensitive
-  #    groupIdStrategy: CaseSensitive
+  # securityRealm: local
+  securityRealm:
+    ldap:
+      configurations:
+        - server: ldap.acme.com
+          rootDN: dc=acme,dc=fr
+          managerPasswordSecret: ${LDAP_PASSWORD}
+      cache:
+        size: 100
+        ttl: 10
+      userIdStrategy: CaseSensitive
+      groupIdStrategy: CaseSensitive
 
   authorizationStrategy:
     loggedInUsersCanDoAnything:
@@ -31,3 +31,12 @@ jenkins:
         remoteFS: '/tmp/1'
         launcher: "jnlp"
         numExecutors: 1
+
+
+mailer:
+  smtpAuthUsername: foo
+  smtpAuthPassword: bar
+  adminAddress: admin@acme.org
+  replyToAddress: do-not-reply@acme.org
+  smtpHost: smtp.acme.org
+  smtpPort: 4441

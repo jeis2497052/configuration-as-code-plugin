@@ -1,6 +1,10 @@
 package org.jenkinsci.plugins.casc;
 
 import hudson.model.Describable;
+
+
+import jenkins.model.Jenkins;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.jenkinsci.Symbol;
 import org.kohsuke.accmod.Restricted;
@@ -10,8 +14,16 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
+
 import java.util.Collection;
 import java.util.HashSet;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+
 import java.util.Set;
 
 /**
@@ -30,7 +42,8 @@ public abstract class BaseConfigurator<T> extends Configurator<T> {
             final Method setter = p.getWriteMethod();
             if (setter == null) continue; // read only
             if (setter.getAnnotation(Deprecated.class) != null) continue; // not actually public
-            if (setter.getAnnotation(Restricted.class) != null) continue; // not actually public     - require access-modifier 1.12
+            if (setter.getAnnotation(Restricted.class) != null)
+                continue; // not actually public     - require access-modifier 1.12
 
             Class c;
             final Type type = setter.getGenericParameterTypes()[0];
@@ -51,7 +64,7 @@ public abstract class BaseConfigurator<T> extends Configurator<T> {
                     actualType = ((WildcardType) actualType).getUpperBounds()[0];
                 }
                 if (!(actualType instanceof Class)) {
-                    throw new IllegalStateException("Can't handle "+type);
+                    throw new IllegalStateException("Can't handle " + type);
                 }
                 c = (Class) actualType;
             }
@@ -69,5 +82,27 @@ public abstract class BaseConfigurator<T> extends Configurator<T> {
             // TODO record symbol as preferred name / alias for this attribute
         }
         return attributes;
+    }
+
+    protected void configure(Map config, T instance) throws Exception {
+        final Set<Attribute> attributes = describe();
+
+        for (Attribute attribute : attributes) {
+            final String name = attribute.getName();
+            if (config.containsKey(name)) {
+                final Object sub = config.get(name);
+                if (attribute.isMultiple()) {
+                    List values = new ArrayList<>();
+                    for (Object o : (List) sub) {
+                        Object value = Configurator.lookup(attribute.getType()).configure(o);
+                        values.add(value);
+                    }
+                    attribute.setValue(instance, values);
+                } else {
+                    Object value = Configurator.lookup(attribute.getType()).configure(sub);
+                    attribute.setValue(instance, value);
+                }
+            }
+        }
     }
 }

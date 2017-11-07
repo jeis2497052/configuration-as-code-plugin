@@ -36,27 +36,8 @@ public class JenkinsConfigurator extends BaseConfigurator<Jenkins> implements Ro
     public Jenkins configure(Object c) throws Exception {
         Map config = (Map) c;
         Jenkins jenkins = Jenkins.getInstance();
-        System.out.println("[LOOOOOOOOOOL]");
 
-        final Set<Attribute> attributes = describe();
-
-        for (Attribute attribute : attributes) {
-            final String name = attribute.getName();
-            if (config.containsKey(name)) {
-                final Object sub = config.get(name);
-                if (attribute.isMultiple()) {
-                    List values = new ArrayList<>();
-                    for (Object o : (List) sub) {
-                        Object value = Configurator.lookup(attribute.getType()).configure(o);
-                        values.add(value);
-                    }
-                    attribute.setValue(jenkins, values);
-                } else {
-                    Object value = Configurator.lookup(attribute.getType()).configure(sub);
-                    attribute.setValue(jenkins, value);
-                }
-            }
-        }
+        configure(config, jenkins);
         return jenkins;
     }
 
@@ -67,7 +48,6 @@ public class JenkinsConfigurator extends BaseConfigurator<Jenkins> implements Ro
 
         final List<ExtensionPoint> all = Jenkins.getInstance().getExtensionList(ExtensionPoint.class);
         for (Object e : all) {
-            System.out.println("[DESCRIPTOR] " +e.toString());
             if (e instanceof Descriptor) continue;
             final Symbol symbol = e.getClass().getAnnotation(Symbol.class);
             if (symbol == null) {

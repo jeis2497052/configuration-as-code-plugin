@@ -1,5 +1,9 @@
 # Jenkins Configuration as Code Plugin
 
+![logo](logo.png)
+
+read [JEP proposal](JEP.adoc) for details
+
 # Getting started
 [getting started](/GETTING_STARTED.md)
 
@@ -49,3 +53,5 @@ Though exploring there are some already agreed design decision taken and few cho
 
 * **We will be using YML as user-interface**: Users will configure their Jenkins with configuration as code using YML file(s), as we believe YML is the most easy to use format for humans, that is also easy to read for computers. It's also a well established format and it support comments. We will not be using json, as this is to verbose and just to much work to write by hand.
 * **Plugin is installed based on an YML file**: Currently the list of plugin to install on the Jenkins master is specified using YML file. It allows us to make it part of the primary configuration file `jenkins.yml` for example, as this is YML. It also ensures the user only need to use one format. We know plugins.txt exists for the Jenkins docker container, where a shell script downloads the plugins and dumps them into the plugin installation dir. It would be possible to support the same format later.
+
+
