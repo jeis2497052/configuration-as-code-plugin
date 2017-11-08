@@ -7,6 +7,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
 		        sh 'env | sort'
+		        sh 'docker --version'
                 sh "docker build -t jcasc:${env.BUILD_ID} ."
             }
         }
