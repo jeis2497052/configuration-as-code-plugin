@@ -1,4 +1,4 @@
-pipelineJob('configuration-as-code-plugin-seed') {
+pipelineJob('configuration-as-code-plugin') {
 
   def repo = 'https://github.com/Praqma/configuration-as-code-plugin.git'
 
