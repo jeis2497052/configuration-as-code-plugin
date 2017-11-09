@@ -1,5 +1,5 @@
 node("utility-slave") {
-    docker.withRegistry('docker.io', 'dockerhub') {
+    docker.withRegistry('https://docker.example.com/', 'dockerhub') {
         stage('Build Docker Image') {
             sh "docker build -t praqma/docker4jcasc:${env.BUILD_ID} ."
         }
