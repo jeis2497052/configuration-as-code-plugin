@@ -4,15 +4,11 @@ node("utility-slave") {
     }
 
     stage('Test') {
-        steps {
-            echo 'Testing..'
-        }
+        echo 'Testing..'
     }
 
     stage('Deploy Docker Image') {
-        steps {
-            echo 'Testing..'
-        }
+        echo 'Deploying...'
     }
 }
 
