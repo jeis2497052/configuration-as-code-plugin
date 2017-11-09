@@ -8,6 +8,7 @@ pipeline {
             steps {
 		        sh 'env | sort'
 		        sh 'docker --version'
+		        sh 'docker info'
                 sh "docker build -t jcasc:${env.BUILD_ID} ."
             }
         }
