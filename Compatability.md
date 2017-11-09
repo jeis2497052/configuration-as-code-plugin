@@ -22,16 +22,16 @@ https://plugins.jenkins.io/mailer
 
 ## Compatability matrix
 
-| plugin        | Security Realm | Nodes   |
+| plugin        | Global Config  | Other   |
 |---------------|----------------|---------|
-| Warnings      | x              |x        |
-| Spotinst      | x              | &#x2713; / x|
-| Artifactory   | x              |x
-| GitHub Auth   | &#x2713;       |x
-| PAM Auth      | &#x2713;       |x
-| Mailer        | x              |x
+| Warnings      | &#x2715;       | &#x2715;|
+| Spotinst      | &#x2715;       | &#x2715;|
+| Artifactory   | &#x2715;       | &#x2715;
+| GitHub Auth   | &#x2714;       | &#x2715;
+| PAM Auth      | &#x2714;       | &#x2715;
+| Mailer        | &#x2714;       | &#x2715;
 
-&#x2713; - has supoported configuration; x - no supported configuration; &#x2713; / x - Shows up in docs but lacks configuration support.
+&#x2714; - has supoported configuration; &#x2715; - no supported configuration
 
 ## Configuration
 
@@ -39,13 +39,14 @@ https://plugins.jenkins.io/mailer
 
 Configuration example for GitHub Authentication
   ```yml
-securityRealm:
-  github:
-    clientID: "someid"
-    clientSecret: "78wuierlkhku"
-    githubApiUri: "api.github.com"
-    githubWebUri: "github.com"
-    oauthScopes: "{repo}"
+jenkins:
+    securityRealm:
+      github:
+        clientID: "someid"
+        clientSecret: "78wuierlkhku"
+        githubApiUri: "api.github.com"
+        githubWebUri: "github.com"
+        oauthScopes: "{repo}"
   ```
 
 #### Spotinst
@@ -54,6 +55,7 @@ Spotinst does not work, however it does show up in the generated Casc docs. I am
 
 Expected valid exmaple configuration for spotinst
 ```yml
+jenkins:
   nodes:
     - spotinstSlave:
         instanceId: 'aws-32yriudskjh-instanceid' 
@@ -68,9 +70,22 @@ Expected valid exmaple configuration for spotinst
 
 Example configuration for PAM Authentication
 ```yml
+jenkins: 
   securityRealm:
     pam:
       serviceName: "hello"
+```
+
+
+#### Mailer
+```yml
+mailer:
+  smtpAuthUsername: foo
+  smtpAuthPassword: bar
+  adminAddress: admin@acme.org
+  replyToAddress: do-not-reply@acme.org
+  smtpHost: smtp.acme.org
+  smtpPort: 4441
 ```
 
 ## Unknowns
