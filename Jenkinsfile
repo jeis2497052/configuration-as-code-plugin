@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t praqma/docker4jcasc:${env.BUILD_ID} .'
+                sh "docker build -t praqma/docker4jcasc:${env.BUILD_ID} ."
             }
         }
         stage('Test') {
@@ -20,7 +20,7 @@ pipeline {
         }
         stage('Deploy Docker Image') {
             steps {
-                sh 'docker push praqma/docker4jcasc:${env.BUILD_ID}'
+                sh "docker push praqma/docker4jcasc:${env.BUILD_ID}"
             }
         }
     }
