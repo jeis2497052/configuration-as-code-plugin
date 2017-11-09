@@ -1,4 +1,4 @@
-FROM maven:3.5-jdk-8-slim as builder
+FROM maven:3.5-jdk-8-slim
 
 ENV prj=/usr/src/casc
 
@@ -25,4 +25,4 @@ ENV JENKINS_HOME /var/jenkins_home
 COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
 RUN xargs /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
 
-COPY --from=builder /usr/src/casc/target/configuration-as-code.hpi /usr/share/jenkins/ref/plugins
+COPY --from=0 /usr/src/casc/target/configuration-as-code.hpi /usr/share/jenkins/ref/plugins
