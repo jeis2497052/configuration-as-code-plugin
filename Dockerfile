@@ -9,7 +9,7 @@ VOLUME ["/root/.m2"]
 ADD . .
 
 # Build hpi file for jenkins
-#RUN mvn clean package -DskipTests
+RUN mvn clean package -DskipTests
 
 FROM jenkins:2.60.3
 
@@ -25,4 +25,4 @@ ENV JENKINS_HOME /var/jenkins_home
 COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
 RUN xargs /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
 
-#COPY --from=0 /usr/src/casc/target/configuration-as-code.hpi /usr/share/jenkins/ref/plugins
+COPY --from=0 /usr/src/casc/target/configuration-as-code.hpi /usr/share/jenkins/ref/plugins
