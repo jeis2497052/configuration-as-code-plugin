@@ -6,12 +6,7 @@ pipeline {
     stages {
         stage('Build Docker Image') {
             steps {
-                script {
-                    def props = readProperties file:'version.properties';
-                    env['ver'] = props['ver'];
-                 }
-		        sh 'echo ${env.ver}'
-                //sh 'docker build -t jcasc:${env.BUILD_ID} .'
+                sh 'docker build -t praqma/docker4jcasc:${env.BUILD_ID} .'
             }
         }
         stage('Test') {
@@ -25,7 +20,7 @@ pipeline {
         }
         stage('Deploy Docker Image') {
             steps {
-                echo 'Deploying....'
+                docker push praqma/docker4jcasc:${env.BUILD_ID}
             }
         }
     }
