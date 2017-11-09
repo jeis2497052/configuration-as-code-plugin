@@ -6,9 +6,11 @@ pipeline {
     stages {
         stage('Build Docker Image') {
             steps {
-                def version = readProperties file: 'version.properties'
-                def ver = version['ver']
-		        sh 'echo ${ver}'
+                script {
+                    def props = readProperties file:'version.properties';
+                    env['ver'] = props['ver'];
+                 }
+		        sh 'echo ${env.ver}'
                 //sh 'docker build -t jcasc:${env.BUILD_ID} .'
             }
         }
