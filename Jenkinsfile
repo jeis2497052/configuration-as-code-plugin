@@ -5,12 +5,12 @@ pipeline {
 
     stages {
         stage('Build Docker Image') {
-            steps {
-		        def version = readProperties file: 'version.properties'
-		        def ver = version['ver']
-		        sh 'echo ${ver}'
+
+		     def version = readProperties file: 'version.properties'
+		     def ver = version['ver']
+		     sh 'echo ${ver}'
                 //sh 'docker build -t jcasc:${env.BUILD_ID} .'
-            }
+
         }
         stage('Test') {
             steps {
