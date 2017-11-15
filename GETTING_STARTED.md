@@ -39,15 +39,15 @@ To test that dependencies works with `cac` you can install them by adding the to
     </dependency>
 
 ``` 
-The deps above works and is already included in the pom.xml file. Notice that some of them reguire you to update jenkins plugins manually through the UI before the `cac`-docs will be generated; github-oauth was one of them. 
+The deps above work, and is already included in the pom.xml file. Notice that some of them require you to update jenkins plugins manually through the UI before the `cac`-docs will be generated; github-oauth was one of them. 
 
 ### Note
-I install the plugins through the pom.xml becuase sometimes the plugins installed through the UI does appear in the `cac`-docs. Nothing to do about that.
+I install the plugins through the pom.xml because sometimes the plugins installed through the UI does appear in the `cac`-docs. Nothing to do about that.
 
 ## How does it work - Findings
 The hypothesis is that only plugins with hooks into certian extension points or plugins that follow a specific convention can be configured in `cac`. 
 
-The github-oauth plugin works and can be installed and configured, and that plugin works with the `securityRealm` extensionpoint other extension points like `cloud` also works, I tried that with the `aws-spotinst` plugin.   
+The github-oauth plugin works and can be installed and configured, and that plugin works with the `securityRealm` extensionpoint. Other extension points like `cloud` also works, I tried that with the `aws-spotinst` plugin.   
 
 However the artifactory plugin does not work. I thought it was because it lacked a stacic class implementing the descriptor interface but that is not the case. Both plugins does this right. The only difference is the security realm. 
 
